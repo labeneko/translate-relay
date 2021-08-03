@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <title>翻訳聖火リレー</title>
+    <style>
+        main {
+            width: 90%;
+            padding-top: 57px;
+            margin: 10px auto;
+        }
+        .card {
+            width: 100%;
+            margin: 20px 0;
+        }
+        #text {
+            font-size: 1.25em;
+        }
+        #result {
+            font-size: 1.25em;
+        }
+        .progress-text {
+            font-size: 1.25em;
+        }
+        .arrow {
+            position: relative;
+        }
+        .arrow::before {
+            content: "";
+            display: block;
+            position: relative;
+            top: 0px;
+            left: 50%;
+            width: 12px;
+            height: 12px;
+            transform: translateX(-50%);
+            border: 12px solid transparent;
+            border-top: 12px solid #000;
+            border-bottom-width: 0;
+        }
+    </style>
+</head>
+<body>
+<header class="header ">
+    <nav class="shadow navbar navbar-expand-lg navbar-light bg-white fixed-top">
+        <div class="container-fluid">
+            <div class="d-flex align-items-center">
+                <a class="py-1 navbar-brand" href="/">
+                    <img src="taimatsu_olympic.png" width="31" height="31" alt="Directory logo">翻訳聖火リレー</a>
+            </div>
+        </div>
+    </nav>
+</header>
+<main>
+    <h2><strong id="text"></strong>の翻訳リレー結果は<strong id="result"></strong>でした</h2>
+    <div id="progress-list">
+    </div>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+<script>
+    (async () => {
+        const url = new URL(window.location.href);
+        const params = url.searchParams;
+        const response = await fetch("https://script.google.com/macros/s/AKfycbyT_PYVSCacP7DvceSC07mIliSzc55vXGIDc9v0dU44x6eQk49kKSkPOWVhxXkyjd3a/exec?id=" + params.get("id"));
+        const results = await response.json();
+        document.getElementById("text").innerText = results.text;
+        document.getElementById("result").innerText = results.result;
+        document.getElementById("progress-list").innerHTML +=
+            `<div class="card">
+                    <div class="card-body">
+                        <p class="card-text">日本語: <strong class="progress-text">${results.text}</strong></p>
+                    </div>
+                </div><div class="arrow"></div>`;
+        for(let progress of results.progresses) {
+            document.getElementById("progress-list").innerHTML +=
+                `<div class="card">
+                    <div class="card-body">
+                        <p class="card-text">${progress.lang_name}: <strong class="progress-text">${progress.result}</strong></p>
+                    </div>
+                </div><div class="arrow"></div>`;
+        }
+        document.getElementById("progress-list").innerHTML +=
+            `<div class="card">
+                    <div class="card-body">
+                        <p class="card-text">日本語: <strong class="progress-text">${results.result}</strong></p>
+                    </div>
+                </div>`;
+    })();
+</script>
+</body>
+</html>
