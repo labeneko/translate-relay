@@ -178,10 +178,6 @@
             return false;
         }
 
-        document.getElementById("list-reload-button").onclick = async () => {
-            await syncResultList();
-        }
-
         async function syncResultList() {
             document.getElementById("loading").style.display = "block";
             document.getElementById("result-list").style.display = "none";
@@ -206,6 +202,9 @@
                         </div>`;
                 }
 
+            }
+            document.getElementById("list-reload-button").onclick = async () => {
+                await syncResultList();
             }
             document.getElementById("loading").style.display = "none";
             document.getElementById("result-list").style.display = "block";
