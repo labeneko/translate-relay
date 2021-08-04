@@ -49,7 +49,7 @@
     </style>
 </head>
 <body>
-<header class="header ">
+<header class="header">
     <nav class="shadow navbar navbar-expand-lg navbar-light bg-white fixed-top">
         <div class="container-fluid">
             <div class="d-flex align-items-center">
@@ -60,20 +60,31 @@
     </nav>
 </header>
 <main>
+    <div id="loading" class="text-center" style="margin-top: 50px;">
+        <div class="spinner-border text-danger" role="status">
+            <span class="sr-only"></span>
+        </div>
+    </div>
     <div id="result-area">
-        <h2><strong id="text"></strong>の翻訳リレー結果は<strong id="result"></strong>でした</h2>
+        <div style="font-size: 1.2rem; border: 1px solid #999; border-radius: 10px; padding: 10px; background: #ffe4e4;"><strong id="text"></strong></div>
+        <div style="margin: 10px 0; width: 100%; text-align: center; font-size: 1.2rem;">の翻訳リレー結果は…</div>
+        <div style="font-size: 1.4rem; border: 1px solid #999; border-radius: 10px; padding: 10px; background: #ad3030; color: #FFFFFF;"><strong id="result"></strong></div>
+        <div class="text-center mb-5" style="margin-top: 50px;">
+            <h2>翻訳聖火リレー結果</h2>
+        </div>
         <div id="progress-list"></div>
     </div>
 </main>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
 <script>
     (async () => {
+        document.getElementById("loading").style.display = "block";
         const url = new URL(window.location.href);
         const params = url.searchParams;
         const response = await fetch("https://script.google.com/macros/s/AKfycbyT_PYVSCacP7DvceSC07mIliSzc55vXGIDc9v0dU44x6eQk49kKSkPOWVhxXkyjd3a/exec?id=" + params.get("id"));
         const results = await response.json();
-        document.getElementById("text").innerText = results.text;
-        document.getElementById("result").innerText = results.result;
+        document.getElementById("text").innerText = `「${results.text}」`;
+        document.getElementById("result").innerText = `「${results.result}」`;
         document.getElementById("progress-list").innerHTML +=
             `<div class="card">
                     <div class="card-body">
@@ -95,6 +106,7 @@
                     </div>
                 </div>`;
         document.getElementById("result-area").style.display = "block";
+        document.getElementById("loading").style.display = "none";
     })();
 </script>
 </body>

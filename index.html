@@ -7,19 +7,88 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
     <title>翻訳聖火リレー</title>
     <style>
         main {
-            width: 90%;
-            padding-top: 57px;
-            margin: 10px auto;
+            padding-top: 52px;
         }
         .card {
             width: 100%;
             margin: 20px 0;
         }
         #result-area {
+            width: 90%;
+            padding-top: 57px;
+            margin: 10px auto;
+        }
+        #result-list {
             display: none;
+        }
+        .search-bar {
+            border-radius: 10rem;
+            background: #fff;
+            -webkit-box-shadow: 0 0 1rem rgb(0 0 0 / 15%);
+            box-shadow: 0 0 1rem rgb(0 0 0 / 15%);
+        }
+        .search-bar .form-group {
+            position: relative;
+            margin-bottom: 0;
+        }
+        .rounded-xl {
+            border-radius: 10rem;
+        }
+        .btn {
+            letter-spacing: .3em;
+            text-transform: uppercase;
+        }
+        .btn, p.lead strong {
+            font-weight: 700;
+        }
+        .btn-block {
+            display: block;
+            width: 100%;
+        }
+        #add-area {
+            background-color: #d9927e;
+            min-height: 300px;
+        }
+        @media (min-width: 768px) {
+            .pb-md-7, .py-md-7 {
+                padding-bottom: 8rem!important;
+            }
+            .pt-md-7, .py-md-7 {
+                padding-top: 8rem!important;
+            }
+        }
+        .pb-6, .py-6 {
+            padding-bottom: 6rem!important;
+        }
+        .pt-6, .py-6 {
+            padding-top: 6rem!important;
+        }
+        .p-3 {
+            padding: 1rem!important;
+        }
+
+        .mt-5, .my-5 {
+            margin-top: 3rem!important;
+        }
+        .search-bar input {
+            border-radius: 10px;
+        }
+        @media (min-width: 992px) {
+            .pl-lg-4, .px-lg-4 {
+                padding-left: 1.5rem!important;
+            }
+            .p-lg-1 {
+                padding: .25rem!important;
+            }
+        }
+        @media (max-width: 991px) {
+            .search-bar {
+                border-radius: 20px;
+            }
         }
     </style>
 </head>
@@ -35,25 +104,112 @@
     </nav>
 </header>
 <main>
-    <div id="resuklt-area">
-        <h2>これまでの翻訳リレーワード一覧</h2>
+    <div id="add-area">
+        <div class="py-6 py-md-7 text-white z-index-20 container">
+            <div class="row">
+                <div class="col-xl-10">
+                    <div class="text-center text-lg-left">
+                        <p class="subtitle letter-spacing-4 mb-2 text-secondary text-shadow text-white">翻訳聖火リレーは、入力された日本語を108言語にリレー翻訳し、最後に日本語を出力するサービスです</p>
+                    </div>
+                    <div class="search-bar p-3 p-lg-1 pl-lg-4">
+                        <form id="text-form">
+                            <div class="row">
+                                <div class="d-flex align-items-center form-group col-lg-10">
+                                    <input type="text" id="input-text" name="text" placeholder="リレーしたいテキストを入力" class="border-0 shadow-0 form-control">
+                                </div>
+                                <div class="col-lg-2">
+                                    <button type="submit" id="submit-button" class="btn-block h-100 rounded-xl btn btn-primary">翻訳</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="result-area">
+        <div class="text-center mb-5">
+            <h2>これまでの翻訳聖火リレー結果一覧</h2>
+        </div>
+        <div id="loading" class="text-center">
+            <div class="spinner-border text-success" role="status">
+                <span class="sr-only"></span>
+            </div>
+        </div>
         <div id="result-list"></div>
     </div>
 </main>
+<div style="position: fixed; bottom: 10px; right: 10px">
+    <div class="toast toast-success" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header" style="background-color: #CCDDFF;">
+            <svg class="bd-placeholder-img rounded mr-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" ><rect fill="#007aff" width="100%" height="100%"/></svg>
+            <strong class="mr-auto pl-lg-1">登録成功</strong>
+        </div>
+        <div class="toast-body">
+            テキストを登録しました。結果の表示までしばらくお待ち下さい。
+        </div>
+    </div>
+    <div class="toast toast-failed" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header" style="background-color: #ffcccc;">
+            <svg class="bd-placeholder-img rounded mr-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" ><rect fill="#ff7a7a" width="100%" height="100%"/></svg>
+            <strong class="mr-auto pl-lg-1">登録失敗</strong>
+        </div>
+        <div class="toast-body">
+            テキスト登録に失敗しました。
+        </div>
+    </div>
+</div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
 <script>
     (async () => {
-        const response = await fetch("https://script.google.com/macros/s/AKfycbzGY9xptw6zBMvxkJlAVP7FIvUyh1Suak3IhDKE8yrWVK1J7RBDWzs-67qZxUHd5pux0A/exec");
-        const results = await response.json();
-        for(let result of results) {
-            document.getElementById("result-list").innerHTML +=
-                `<a class="card" href="result.html?id=${result.id}">
-                    <div class="card-body">
-                        <p class="card-text">${result.text}</p>
-                    </div>
-                </a>`;
+        await syncResultList();
+        document.getElementById("text-form").onsubmit = async (e) => {
+            e.preventDefault();
+            const text = encodeURI(document.getElementById("input-text").value);
+            const response = await fetch("https://script.google.com/macros/s/AKfycbysyGMQ1YFsHSKawgCWr9sv0hlRlTlcov-TrVKTSEvqJYz9RK6PSY2cX9iavw7zjJwN/exec?text=" + text);
+            const result = await response.json();
+            if (result.result) {
+                document.getElementById("input-text").value = ""
+                $(".toast-success").toast("show")
+            } else {
+                $(".toast-failed").toast("show")
+            }
+            await syncResultList();
+            return false;
         }
-        document.getElementById("result-area").style.display = "block";
+
+        document.getElementById("list-reload-button").onclick = async () => {
+            await syncResultList();
+        }
+
+        async function syncResultList() {
+            document.getElementById("loading").style.display = "block";
+            document.getElementById("result-list").style.display = "none";
+            document.getElementById("result-list").innerHTML = "";
+            const response = await fetch("https://script.google.com/macros/s/AKfycbzGY9xptw6zBMvxkJlAVP7FIvUyh1Suak3IhDKE8yrWVK1J7RBDWzs-67qZxUHd5pux0A/exec");
+            const results = await response.json();
+            document.getElementById("result-list").innerHTML = "<div style='width: 100%; text-align: right'><button id='list-reload-button' class='btn btn-success' style='cursor: pointer; color: #efefef'>一覧を再取得</buttonid></div>"
+            for(let result of results) {
+                if (result.result) {
+                    document.getElementById("result-list").innerHTML +=
+                        `<a class="card" href="result.html?id=${result.id}" style="background-color: #fffcfc;">
+                            <div class="card-body">
+                                <p class="card-text">${result.text}</p>
+                            </div>
+                        </a>`;
+                } else {
+                    document.getElementById("result-list").innerHTML +=
+                        `<div class="card">
+                            <div class="card-body">
+                                <p class="card-text">${result.text}   <small><span class="spinner-border text-warning" role="status" style="margin-left: 1rem; width: 1rem; height: 1rem;"><span class="sr-only"></span></span>翻訳中…</small></p>
+                            </div>
+                        </div>`;
+                }
+
+            }
+            document.getElementById("loading").style.display = "none";
+            document.getElementById("result-list").style.display = "block";
+        }
     })();
 </script>
 </body>
