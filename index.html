@@ -18,6 +18,9 @@
             width: 100%;
             margin: 20px 0;
         }
+        #result-area {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -32,8 +35,9 @@
     </nav>
 </header>
 <main>
-    <h2>結果一覧</h2>
-    <div id="result-list">
+    <div id="resuklt-area">
+        <h2>これまでの翻訳リレーワード一覧</h2>
+        <div id="result-list"></div>
     </div>
 </main>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
@@ -49,6 +53,7 @@
                     </div>
                 </a>`;
         }
+        document.getElementById("result-area").style.display = "block";
     })();
 </script>
 </body>
